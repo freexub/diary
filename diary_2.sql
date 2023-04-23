@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: 127.0.0.1:3306
--- Время создания: Мар 23 2023 г., 20:09
+-- Время создания: Апр 23 2023 г., 18:49
 -- Версия сервера: 5.7.39
 -- Версия PHP: 7.4.30
 
@@ -127,6 +127,50 @@ CREATE TABLE `classrooms` (
   `date_create` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Дамп данных таблицы `classrooms`
+--
+
+INSERT INTO `classrooms` (`id`, `name`, `year_study`, `date_create`) VALUES
+(1, '11 А класс', 11, '2023-04-23 09:12:08'),
+(2, '11 Б класс', 11, '2023-04-23 09:12:24'),
+(3, '11 В класс', 11, '2023-04-23 09:12:34');
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `disciplines`
+--
+
+CREATE TABLE `disciplines` (
+  `id` int(11) NOT NULL,
+  `name` varchar(250) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `about` text COLLATE utf8mb4_unicode_ci,
+  `active` smallint(1) NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Дамп данных таблицы `disciplines`
+--
+
+INSERT INTO `disciplines` (`id`, `name`, `about`, `active`) VALUES
+(1, 'Математика', 'Описание дисциплины - Математика', 0),
+(2, 'Казахский язык', '', 0),
+(3, 'Информатика', '', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `disciplines_classroom`
+--
+
+CREATE TABLE `disciplines_classroom` (
+  `id` int(11) NOT NULL,
+  `classroom_id` int(11) NOT NULL,
+  `disciplines_id` int(11) NOT NULL,
+  `active` smallint(1) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- --------------------------------------------------------
 
 --
@@ -169,17 +213,28 @@ INSERT INTO `migration` (`version`, `apply_time`) VALUES
 --
 
 CREATE TABLE `profiles` (
-  `user_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL DEFAULT '0',
   `sname` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `fname` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `fname` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `birthday` date NOT NULL,
   `adress` text COLLATE utf8mb4_unicode_ci NOT NULL,
   `type_id` smallint(6) NOT NULL,
+  `gender` tinyint(1) NOT NULL DEFAULT '0',
   `iin` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `photo` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `date_update` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `date_create` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Дамп данных таблицы `profiles`
+--
+
+INSERT INTO `profiles` (`user_id`, `sname`, `name`, `fname`, `birthday`, `adress`, `type_id`, `gender`, `iin`, `photo`, `date_update`, `date_create`) VALUES
+(12, 'Бурк', 'Евгений', NULL, '2023-04-13', 'Алиханова 28/1\r\n9', 2, 1, '111111', 'user1.jpg', '2023-04-23 10:42:04', '2023-04-22 07:04:37'),
+(14, 'Чехов', 'Антон', NULL, '1999-07-24', 'Караганда, Гоголя 12/2, кв. 37', 2, 1, '555466622625', NULL, '2023-04-23 10:42:06', '2023-04-23 05:07:54'),
+(16, 'Петров', 'Сергей', NULL, '2023-04-26', 'Алиханова 28/1\r\n9', 2, 1, '4444444444444', '16_photo.jpg', '2023-04-23 10:41:56', '2023-04-23 05:58:42');
 
 -- --------------------------------------------------------
 
@@ -191,6 +246,15 @@ CREATE TABLE `profiles_type` (
   `id` smallint(6) NOT NULL,
   `name` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Дамп данных таблицы `profiles_type`
+--
+
+INSERT INTO `profiles_type` (`id`, `name`) VALUES
+(1, 'Сотрудник'),
+(2, 'Ученик'),
+(3, 'Родитель');
 
 -- --------------------------------------------------------
 
@@ -204,6 +268,15 @@ CREATE TABLE `students_classrooms` (
   `date_update` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `date_create` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Дамп данных таблицы `students_classrooms`
+--
+
+INSERT INTO `students_classrooms` (`user_id`, `classroom_id`, `date_update`, `date_create`) VALUES
+(12, 1, '2023-04-23 18:18:24', '2023-04-23 15:18:24'),
+(14, 1, '2023-04-23 17:34:28', '2023-04-23 14:34:28'),
+(16, 1, '2023-04-23 17:37:36', '2023-04-23 14:37:36');
 
 -- --------------------------------------------------------
 
@@ -228,7 +301,21 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id`, `username`, `auth_key`, `password_hash`, `password_reset_token`, `email`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'admin', 'S1uhsDURRKOQ1RSrvIKX3OeFkBffWks5', '$2y$13$swNV7b6VMpM4Wb.ndABocO5ZaR2AASmNha1XUZUVYTpYsItwq1DWO', NULL, 'admin@admin.kz', 10, 1679576393, 1679576393);
+(1, 'admin', 'S1uhsDURRKOQ1RSrvIKX3OeFkBffWks5', '$2y$13$swNV7b6VMpM4Wb.ndABocO5ZaR2AASmNha1XUZUVYTpYsItwq1DWO', NULL, 'admin@admin.kz', 10, 1679576393, 1679576393),
+(12, '123123', '9c-719x5vtYXQX1oQGYj7G7Ci3tVvP4H', '$2y$13$kjwNl/ZN6rmrYtwI30hrhu1Nu3Lu9bRZNMs98GyzcE4PIf4/1ujge', NULL, 'freexub@gmail.com', 10, 1682147077, 1682147077),
+(14, 'a.chehov', 'VgQ6oVUBrruHnF3mFjLoUniCzEOjzKrI', '$2y$13$GV4UGST4K7Gcu7LpYFdIUev4I7IL0KTYUb/fAGxUvp4n2qG8nFIcC', NULL, 'a.chehov@ok.kz', 10, 1682226474, 1682226474),
+(16, '321321', '_TXi2Jpi10U1pMFwNfLyvYKeozGbhQbc', '$2y$13$ZfmyaRmy2PPMcnLq2K.qAOyQdAhShBi3DLG0vvHaiOPks3c7opnEC', NULL, '321321@gmail.com', 10, 1682229522, 1682229522);
+
+-- --------------------------------------------------------
+
+--
+-- Структура таблицы `сlassroom_teachers`
+--
+
+CREATE TABLE `сlassroom_teachers` (
+  `id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Индексы сохранённых таблиц
@@ -238,6 +325,18 @@ INSERT INTO `user` (`id`, `username`, `auth_key`, `password_hash`, `password_res
 -- Индексы таблицы `classrooms`
 --
 ALTER TABLE `classrooms`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Индексы таблицы `disciplines`
+--
+ALTER TABLE `disciplines`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Индексы таблицы `disciplines_classroom`
+--
+ALTER TABLE `disciplines_classroom`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -279,6 +378,12 @@ ALTER TABLE `user`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Индексы таблицы `сlassroom_teachers`
+--
+ALTER TABLE `сlassroom_teachers`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT для сохранённых таблиц
 --
 
@@ -286,6 +391,18 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT для таблицы `classrooms`
 --
 ALTER TABLE `classrooms`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT для таблицы `disciplines`
+--
+ALTER TABLE `disciplines`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT для таблицы `disciplines_classroom`
+--
+ALTER TABLE `disciplines_classroom`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
@@ -298,19 +415,25 @@ ALTER TABLE `menu`
 -- AUTO_INCREMENT для таблицы `profiles_type`
 --
 ALTER TABLE `profiles_type`
-  MODIFY `id` smallint(6) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` smallint(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT для таблицы `students_classrooms`
 --
 ALTER TABLE `students_classrooms`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT для таблицы `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+
+--
+-- AUTO_INCREMENT для таблицы `сlassroom_teachers`
+--
+ALTER TABLE `сlassroom_teachers`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Ограничения внешнего ключа сохраненных таблиц
@@ -326,9 +449,7 @@ ALTER TABLE `menu`
 -- Ограничения внешнего ключа таблицы `profiles`
 --
 ALTER TABLE `profiles`
-  ADD CONSTRAINT `profiles_ibfk_1` FOREIGN KEY (`type_id`) REFERENCES `profiles_type` (`id`),
-  ADD CONSTRAINT `profiles_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
-  ADD CONSTRAINT `profiles_ibfk_3` FOREIGN KEY (`user_id`) REFERENCES `students_classrooms` (`user_id`);
+  ADD CONSTRAINT `profiles_ibfk_1` FOREIGN KEY (`type_id`) REFERENCES `profiles_type` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
