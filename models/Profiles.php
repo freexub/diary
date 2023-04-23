@@ -14,7 +14,9 @@ use Yii;
  * @property string $birthday
  * @property string $adress
  * @property int $type_id
+ * @property int $gender
  * @property string $iin
+ * @property string $photo
  * @property string $date_update
  * @property string $date_create
  *
@@ -38,15 +40,15 @@ class Profiles extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'sname', 'name', 'fname', 'birthday', 'adress', 'type_id', 'iin'], 'required'],
-            [['user_id', 'type_id'], 'integer'],
+            [['user_id', 'gender', 'sname', 'name', 'birthday', 'adress', 'type_id', 'iin'], 'required'],
+            [['user_id', 'type_id', 'gender'], 'integer'],
             [['birthday', 'date_update', 'date_create'], 'safe'],
             [['adress'], 'string'],
-            [['sname', 'name', 'fname'], 'string', 'max' => 50],
+            [['photo', 'sname', 'name', 'fname'], 'string', 'max' => 50],
             [['iin'], 'string', 'max' => 20],
-            [['type_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProfilesType::class, 'targetAttribute' => ['type_id' => 'id']],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
-            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => StudentsClassrooms::class, 'targetAttribute' => ['user_id' => 'user_id']],
+//            [['type_id'], 'exist', 'skipOnError' => true, 'targetClass' => ProfilesType::class, 'targetAttribute' => ['type_id' => 'id']],
+//            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
+//            [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => StudentsClassrooms::class, 'targetAttribute' => ['user_id' => 'user_id']],
         ];
     }
 
@@ -57,16 +59,27 @@ class Profiles extends \yii\db\ActiveRecord
     {
         return [
             'user_id' => 'User ID',
-            'sname' => 'Sname',
-            'name' => 'Name',
-            'fname' => 'Fname',
-            'birthday' => 'Birthday',
-            'adress' => 'Adress',
-            'type_id' => 'Type ID',
-            'iin' => 'Iin',
-            'date_update' => 'Date Update',
-            'date_create' => 'Date Create',
+            'sname' => 'Фамилия',
+            'name' => 'Имя',
+            'fname' => 'Отчество',
+            'birthday' => 'Дата рождения',
+            'adress' => 'Адрес',
+            'type_id' => 'Тип профиля',
+            'gender' => 'Пол',
+            'iin' => 'ИИН',
+            'photo' => 'Фото',
+            'date_update' => 'Дата редактирования',
+            'date_create' => 'Дата регистрации',
         ];
+    }
+
+    public function beforeSave($insert){
+        if (parent::beforeSave($insert)) {
+            $this->birthday = Yii::$app->formatter->asDate($this->birthday, 'yyyy-MM-dd');
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -77,6 +90,11 @@ class Profiles extends \yii\db\ActiveRecord
     public function getType()
     {
         return $this->hasOne(ProfilesType::class, ['id' => 'type_id']);
+    }
+
+    public function getAllType()
+    {
+        return ProfilesType::find()->all();
     }
 
     /**
@@ -97,5 +115,21 @@ class Profiles extends \yii\db\ActiveRecord
     public function getUser0()
     {
         return $this->hasOne(StudentsClassrooms::class, ['user_id' => 'user_id']);
+    }
+
+    public function getFullName(){
+        return $this->sname . ' ' . $this->name;
+    }
+
+    public function getPhoto(){
+        if (empty($this->photo)){
+            return 'no-photo.png';
+        }else{
+            if (file_exists(Yii::$app->basePath.'/web/photo/'.$this->photo)){
+                return $this->photo;
+            }else{
+                return 'no-photo.png';
+            }
+        }
     }
 }

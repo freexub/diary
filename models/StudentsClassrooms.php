@@ -31,7 +31,7 @@ class StudentsClassrooms extends \yii\db\ActiveRecord
     {
         return [
             [['classroom_id'], 'required'],
-            [['classroom_id'], 'integer'],
+            [['classroom_id','user_id'], 'integer'],
             [['date_update', 'date_create'], 'safe'],
         ];
     }
@@ -56,6 +56,6 @@ class StudentsClassrooms extends \yii\db\ActiveRecord
      */
     public function getProfiles()
     {
-        return $this->hasMany(Profiles::class, ['user_id' => 'user_id']);
+        return $this->hasOne(Profiles::class, ['user_id' => 'user_id']);
     }
 }

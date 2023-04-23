@@ -10,43 +10,64 @@ use yii\grid\GridView;
 /** @var app\models\ProfilesSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Profiles';
+$this->title = 'Профайлы';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="profiles-index">
+<div class="container">
+    <div class="profiles-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+        <h1><?php /*echo Html::encode($this->title) */?></h1>
 
-    <p>
-        <?= Html::a('Create Profiles', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
-
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'user_id',
-            'sname',
-            'name',
-            'fname',
-            'birthday',
-            //'adress:ntext',
-            //'type_id',
-            //'iin',
-            //'date_update',
-            //'date_create',
-            [
-                'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, Profiles $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'user_id' => $model->user_id]);
-                 }
-            ],
-        ],
-    ]); ?>
+        <p>
+            <?= Html::a('Создать профайл', ['create'], ['class' => 'btn btn-success']) ?>
+        </p>
 
 
+        <div class="card card-solid">
+            <div class="card-header pb-0">
+                <?php  echo $this->render('_search', ['model' => $searchModel]); ?>
+            </div>
+            <div class="card-body pb-0">
+                <div class="row">
+                    <?php foreach ($dataProvider->models as $profile) {?>
+                        <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch flex-column">
+                            <div class="card bg-light d-flex flex-fill">
+                                <div class="card-header text-muted border-bottom-0">
+                                    <h2 class="lead"><b><?=$profile->getFullName()?></b></h2>
+                                </div>
+                                <div class="card-body pt-0">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            <p class="text-muted text-sm"><b>Тип профайла:</b> <?=$profile->type->name?></p>
+                                            <ul class="ml-4 mb-0 fa-ul text-muted">
+                                                <li class="small mb-1"><span class="fa-li"><i class="fas fa-lg fa-building"></i></span><b>Адрес:</b> <?=$profile->adress?></li>
+                                                <li class="small mb-1"><span class="fa-li"><i class="fas fa-lg fa-phone"></i></span><b>Телефон:</b> + 7 700 212 23 52</li>
+                                                <li class="small mb-1"><span class="fa-li"><i class="fas fa-lg fa-calendar"></i></span><b>Дата рождения:</b> <?=$profile->birthday?></li>
+                                            </ul>
+                                        </div>
+                                        <div class="col-4 text-center">
+                                            <img src="/photo/<?=$profile->getPhoto()?>" alt="user-avatar" class="img-circle img-fluid">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="text-right">
+                                        <a href="#" class="btn btn-sm bg-teal">
+                                            <i class="fas fa-comments"></i>
+                                        </a>
+                                        <a href="/admin/profiles/view?user_id=<?=$profile->user_id?>" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-user"></i> Открыть профайл
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <?php } ?>
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
 </div>

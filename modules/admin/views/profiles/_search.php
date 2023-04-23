@@ -2,6 +2,7 @@
 
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
+use yii\helpers\ArrayHelper;
 
 /** @var yii\web\View $this */
 /** @var app\models\ProfilesSearch $model */
@@ -15,31 +16,26 @@ use yii\widgets\ActiveForm;
         'method' => 'get',
     ]); ?>
 
-    <?= $form->field($model, 'user_id') ?>
+    <div class="row">
+        <div class="col-md-3">
+            <?= $form->field($model, 'sname') ?>
+        </div>
+        <div class="col-md-3">
+            <?= $form->field($model, 'name') ?>
+        </div>
+        <div class="col-md-2">
+            <?php echo $form->field($model, 'iin') ?>
+        </div>
+        <div class="col-md-3">
+            <?php echo $form->field($model, 'type_id')->dropDownList(ArrayHelper::map($model->getAllType(), 'id', 'name'),['prompt' => 'Выбрать профиль ...']) ?>
+        </div>
+        <div class="col-md-1 pt-4">
+            <div class="form-group pt-2">
+                <?= Html::submitButton('Поиск', ['class' => 'btn btn-primary btn-block']) ?>
+            </div>
+        </div>
 
-    <?= $form->field($model, 'sname') ?>
-
-    <?= $form->field($model, 'name') ?>
-
-    <?= $form->field($model, 'fname') ?>
-
-    <?= $form->field($model, 'birthday') ?>
-
-    <?php // echo $form->field($model, 'adress') ?>
-
-    <?php // echo $form->field($model, 'type_id') ?>
-
-    <?php // echo $form->field($model, 'iin') ?>
-
-    <?php // echo $form->field($model, 'date_update') ?>
-
-    <?php // echo $form->field($model, 'date_create') ?>
-
-    <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
-        <?= Html::resetButton('Reset', ['class' => 'btn btn-outline-secondary']) ?>
     </div>
-
     <?php ActiveForm::end(); ?>
 
 </div>

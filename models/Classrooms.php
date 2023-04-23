@@ -42,8 +42,8 @@ class Classrooms extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
-            'year_study' => 'Year Study',
+            'name' => 'Название',
+            'year_study' => 'Год обучения',
             'date_create' => 'Date Create',
         ];
     }

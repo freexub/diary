@@ -6,15 +6,21 @@ use yii\helpers\Html;
 <!-- Navbar -->
 <nav class="main-header navbar navbar-expand navbar-light navbar-white">
     <div class="container">
-        <a href="index3.html" class="navbar-brand">
-            <span class="brand-text font-weight-light">AdminLTE 3</span>
+        <a href="/" class="navbar-brand">
+            <span class="brand-text font-weight-light">СШ №9</span>
         </a>
         <!-- Left navbar links -->
         <ul class="navbar-nav">
             <li class="nav-item">
             </li>
-            <li class="nav-item d-none d-sm-inline-block">
-                <a href="index3.html" class="nav-link">Home</a>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="/admin/profiles/">Профайлы</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/admin/classroom/">Классы</a>
+                    <a class="dropdown-item" href="/admin/discipline/">Дисциплины</a>
+                </div>
             </li>
             <li class="nav-item d-none d-sm-inline-block">
                 <a href="#" class="nav-link">Contact</a>
@@ -31,19 +37,9 @@ use yii\helpers\Html;
                 </div>
             </li>
         </ul>
-        <!-- SEARCH FORM -->
-        <form class="form-inline ml-3">
-            <div class="input-group input-group-sm">
-                <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
-                <div class="input-group-append">
-                    <button class="btn btn-navbar" type="submit">
-                        <i class="fas fa-search"></i>
-                    </button>
-                </div>
-            </div>
-        </form>
         <!-- Right navbar links -->
         <ul class="navbar-nav ml-auto">
+            <?php if (!Yii::$app->user->isGuest){ ?>
             <!-- Messages Dropdown Menu -->
             <li class="nav-item dropdown">
                 <a class="nav-link" data-toggle="dropdown" href="#">
@@ -129,10 +125,19 @@ use yii\helpers\Html;
                     <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
                 </div>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button"><i
-                            class="fas fa-th-large"></i></a>
-            </li>
+            <?php } ?>
+
+            <?php if(Yii::$app->user->isGuest) { ?>
+                <li class="nav-item d-none d-sm-inline-block">
+                    <a href="/site/login" class="nav-link">Login</a>
+                </li>
+            <?php }else{
+                echo '<li class="nav-item">';
+                echo Html::beginForm(['/site/logout']);
+                echo Html::submitButton('Logout (' . Yii::$app->user->identity->username . ')', ['class' => 'nav-link btn btn-link logout']);
+                echo Html::endForm();
+                echo '</li>';
+            } ?>
         </ul>
     </div>
 </nav>

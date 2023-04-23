@@ -2,11 +2,15 @@
 
 namespace app\modules\admin\controllers;
 
+use Yii;
 use app\models\Profiles;
 use app\models\ProfilesSearch;
+use app\models\Signup;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use app\models\UploadForm;
+use yii\web\UploadedFile;
 
 /**
  * ProfilesController implements the CRUD actions for Profiles model.
@@ -68,17 +72,37 @@ class ProfilesController extends Controller
     public function actionCreate()
     {
         $model = new Profiles();
+        $signUp = new Signup();
 
         if ($this->request->isPost) {
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'user_id' => $model->user_id]);
+            $photoFile = new UploadForm();
+            if ($signUp->load(Yii::$app->getRequest()->post())) {
+                if ($user = $signUp->signup()) {
+                    if ($model->load($this->request->post())) {
+                        $path = Yii::$app->basePath . '/web/photo/';
+                        $photoFile->file = UploadedFile::getInstance($model, 'photo');
+
+                        if ($photoFile->file && $photoFile->validate()) {
+                            $model->photo = $user->id . '_photo' . '.' . $photoFile->file->extension;
+                            $photoFile->file->saveAs($path. $model->photo);
+                        }
+                        $model->user_id = $user->id;
+                        if ($model->save())
+                            return $this->redirect(['view', 'user_id' => $model->user_id]);
+                        else
+                            var_dump($model->errors);die();
+                    }
+                } else {
+                    var_dump($signUp->errors);die();
+                    $model->loadDefaultValues();
+//                    $signUp->loadDefaultValues();
+                }
             }
-        } else {
-            $model->loadDefaultValues();
         }
 
         return $this->render('create', [
             'model' => $model,
+            'signUp' => $signUp,
         ]);
     }
 

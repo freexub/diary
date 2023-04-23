@@ -5,6 +5,20 @@ use mdm\admin\models\User as Users;
 
 class User extends Users
 {
+
+    /**
+     * {@inheritdoc}
+     */
+    public function attributeLabels()
+    {
+        return [
+            'id' => 'User ID',
+            'username' => 'Логин',
+            'password' => 'Пароль',
+            'date_update' => 'Date Update',
+            'date_create' => 'Date Create',
+        ];
+    }
 //    public $id;
 //    public $username;
 //    public $password;
