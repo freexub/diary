@@ -5,21 +5,21 @@ namespace app\models;
 use Yii;
 
 /**
- * This is the model class for table "classrooms".
+ * This is the model class for table "list_class".
  *
  * @property int $id
  * @property string $name
  * @property int $year_study
  * @property string $date_create
  */
-class Classrooms extends \yii\db\ActiveRecord
+class ListClass extends \yii\db\ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
     public static function tableName()
     {
-        return 'classrooms';
+        return 'class_list';
     }
 
     /**
@@ -46,5 +46,9 @@ class Classrooms extends \yii\db\ActiveRecord
             'year_study' => 'Год обучения',
             'date_create' => 'Date Create',
         ];
+    }
+
+    public function getAllClassType(){
+        return ClassType::find()->all();
     }
 }
