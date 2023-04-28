@@ -113,20 +113,28 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]); ?>
                 </div>
                 <div class="tab-pane" id="tab_3">
-                    <?= GridView::widget([
-                        'dataProvider' => $dataDiscipline,
-                        'filterModel' => $searchDiscipline,
-                        'columns' => [
-                            ['class' => 'yii\grid\SerialColumn'],
-                            'name',
-                            [
-                                'format' => 'raw',
-                                'value' => function($data){
-                                    return '<a href="add-student?user_id='.$data->id.'&id='.$_GET["id"].'" class="btn btn-success">Lj,fdbnm</a>';
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="btn-group-vertical btn-gro">
+                            <?php
+                                foreach ($dataDiscipline->models as $item){
+                                    $active = '';
+                                    if (isset($_GET['did']) && $_GET['did'] == $item->id)
+                                        $active = 'active';
+                                    echo Html::a($item->name, ['', 'id' => $model->id, 'did' => $item->id], ['class' => 'btn btn-info mb-1 '.$active]);
                                 }
-                            ],
-                        ],
-                    ]); ?>
+                            ?>
+                            </div>
+                        </div>
+                        <div class="col-md-10">
+                            <?= $this->render('schedule', [
+                                'dataProvider' => $dataSchedule,
+                                'modelSchedule' => $modelSchedule,
+                                'discipline_class_id' => $discipline_class_id,
+                            ]) ?>
+                        </div>
+                    </div>
+
                 </div>
 
 

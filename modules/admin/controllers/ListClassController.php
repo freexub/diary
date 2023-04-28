@@ -2,6 +2,9 @@
 
 namespace app\modules\admin\controllers;
 
+use app\models\Disciplines;
+use app\models\DisciplinesClassroom;
+use app\models\DisciplinesClassSchedule;
 use Yii;
 use app\models\ProfilesSearch;
 use app\models\DisciplinesClassroomSearch;
@@ -61,6 +64,7 @@ class ListClassController extends Controller
      */
     public function actionView($id, $tab=0)
     {
+        $model = $this->findModel($id);
         $searchModel = new DisciplinesSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
@@ -69,9 +73,35 @@ class ListClassController extends Controller
         $dataProfiles->query->andWhere(['type_id'=>2]);
         $dataProfiles->query->andWhere('user_id not in (SELECT user_id FROM students_classrooms WHERE type_id = 2)');
 
+//
+//        $searchDiscipline = new DisciplinesSearch();
+//        $dataDiscipline = $searchDiscipline->search($this->request->queryParams);
+//        $dataDiscipline->query->andWhere('id in (Select disciplines_id FROM disciplines_class_type where class_type_id = '.$model->year_study.')');
 
-        $searchDiscipline = new DisciplinesSearch();
-        $dataDiscipline = $searchModel->search($this->request->queryParams);
+        $dataDiscipline = new ActiveDataProvider([
+            'query' => Disciplines::find()->where('id in (Select disciplines_id FROM disciplines_class_type where class_type_id = '.$model->year_study.')'),
+            'sort' => false
+        ]);
+
+        $querySchedule = '';
+        $discipline_class_id = 0;
+        if (isset($_GET['did'])){
+            $discipline_class_id = DisciplinesClassroom::find()->where([
+                'disciplines_id' => $_GET['did'],
+                'class_type_id' => $model->year_study
+            ])->one();
+//            var_dump($discipline_class_id->id);die();
+            $querySchedule = DisciplinesClassSchedule::find()
+                ->where(['disciplines_class_list_id'=>$discipline_class_id->id])
+                ->orderBy('day ASC');
+
+        }
+        $dataSchedule = new ActiveDataProvider([
+            'query' => $querySchedule,
+            'sort' => false
+        ]);
+
+        $modelSchedule = new DisciplinesClassSchedule();
 
         $dataStudents = new ActiveDataProvider([
             'query' => StudentsClassrooms::find()->where(['classroom_id'=>$id]),
@@ -79,15 +109,29 @@ class ListClassController extends Controller
         ]);
 
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
             'searchProfiles' => $searchProfiles,
             'dataProfiles' => $dataProfiles,
             'dataStudents' => $dataStudents,
-            'searchDiscipline' => $searchDiscipline,
             'dataDiscipline' => $dataDiscipline,
+            'dataSchedule' => $dataSchedule,
+            'modelSchedule' => $modelSchedule,
+            'discipline_class_id' => $discipline_class_id,
         ]);
+    }
+
+    public function actionScheduleAdd(){
+        $model = new DisciplinesClassSchedule();
+
+        if ($this->request->isPost) {
+            if ($model->load($this->request->post()) && $model->save()) {
+                return $this->redirect(Yii::$app->request->referrer);
+            }
+        } else {
+            var_dump($model->errors);die();
+        }
     }
 
     public function actionAddStudent($id, $user_id){

@@ -23,13 +23,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     <p class="text-muted text-center"><?=$model->type->name ?></p>
                     <ul class="list-group list-group-unbordered mb-3">
                         <li class="list-group-item">
-                            <b>Сообщения от учеников</b> <a class="float-right">941</a>
+                            <b>Средний балл</b> <a class="float-right">81</a>
                         </li>
                         <li class="list-group-item">
-                            <b>Сообщения от учителей</b> <a class="float-right">356</a>
+                            <b>Изучаемые предметы</b> <a class="float-right">16</a>
                         </li>
                         <li class="list-group-item">
-                            <b>Сообщения от администрации</b> <a class="float-right">13,287</a>
+                            <b>Входящие сообщения</b> <a class="float-right">187</a>
                         </li>
                     </ul>
                     <?= Html::a('Редактировать', ['update', 'user_id' => $model->user_id], ['class' => 'btn btn-primary btn-block']) ?>

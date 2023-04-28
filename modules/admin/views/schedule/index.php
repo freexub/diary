@@ -1,24 +1,24 @@
 <?php
 
-use app\models\ClassType;
+use app\models\DisciplinesClassSchedule;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\grid\ActionColumn;
 use yii\grid\GridView;
 
 /** @var yii\web\View $this */
-/** @var app\models\ClassTypeSearch $searchModel */
+/** @var app\models\DisciplinesClassScheduleSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Типы классов';
+$this->title = 'Disciplines Class Schedules';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="class-type-index">
+<div class="disciplines-class-schedule-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Создать тип класса', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Create Disciplines Class Schedule', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -27,15 +27,15 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-//            ['class' => 'yii\grid\SerialColumn'],
+            ['class' => 'yii\grid\SerialColumn'],
 
-//            'id',
-            'name',
-            'about:ntext',
-//            'active',
+            'id',
+            'disciplines_class_type_id',
+            'date_start',
+            'date_end',
             [
                 'class' => ActionColumn::className(),
-                'urlCreator' => function ($action, ClassType $model, $key, $index, $column) {
+                'urlCreator' => function ($action, DisciplinesClassSchedule $model, $key, $index, $column) {
                     return Url::toRoute([$action, 'id' => $model->id]);
                  }
             ],

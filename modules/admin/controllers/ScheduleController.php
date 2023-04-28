@@ -2,23 +2,16 @@
 
 namespace app\modules\admin\controllers;
 
-use app\models\ListClass;
-use app\models\ListClassSearch;
-use Yii;
-use app\models\ClassType;
-use app\models\ClassTypeSearch;
-use app\models\DisciplinesClassroom;
-use app\models\DisciplinesClassroomSearch;
-use app\models\DisciplinesSearch;
+use app\models\DisciplinesClassSchedule;
+use app\models\DisciplinesClassScheduleSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\data\ActiveDataProvider;
 
 /**
- * ClassTypeController implements the CRUD actions for ClassType model.
+ * ScheduleController implements the CRUD actions for DisciplinesClassSchedule model.
  */
-class ClassTypeController extends Controller
+class ScheduleController extends Controller
 {
     /**
      * @inheritDoc
@@ -39,13 +32,13 @@ class ClassTypeController extends Controller
     }
 
     /**
-     * Lists all ClassType models.
+     * Lists all DisciplinesClassSchedule models.
      *
      * @return string
      */
     public function actionIndex()
     {
-        $searchModel = new ClassTypeSearch();
+        $searchModel = new DisciplinesClassScheduleSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
@@ -55,69 +48,26 @@ class ClassTypeController extends Controller
     }
 
     /**
-     * Displays a single ClassType model.
+     * Displays a single DisciplinesClassSchedule model.
      * @param int $id ID
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionView($id)
     {
-        $searchDisciplineClassrom = new DisciplinesClassroomSearch();
-        $dataDisciplineClassrom = $searchDisciplineClassrom->search($this->request->queryParams);
-
-        $searchDiscipline = new DisciplinesSearch();
-        $dataDiscipline = $searchDiscipline->search($this->request->queryParams);
-        $dataDiscipline->query->andWhere('id not in (SELECT disciplines_id FROM disciplines_class_type)');
-
-        $searchListClass = new ListClassSearch();
-        $dataListClass = $searchListClass->search($this->request->queryParams);
-        $dataListClass->query->andWhere(['year_study'=>$id]);
-
         return $this->render('view', [
             'model' => $this->findModel($id),
-            'searchDiscipline' => $searchDiscipline,
-            'dataDiscipline' => $dataDiscipline,
-            'searchDisciplineClassrom' => $searchDisciplineClassrom,
-            'dataDisciplineClassrom' => $dataDisciplineClassrom,
-            'searchListClass' => $searchListClass,
-            'dataListClass' => $dataListClass,
         ]);
     }
 
-    public function actionAdd($disciplines_id, $class_type_id){
-        $model = new DisciplinesClassroom();
-        $model->disciplines_id = $disciplines_id;
-        $model->class_type_id = $class_type_id;
-        if ($model->save())
-            return $this->redirect(Yii::$app->request->referrer);
-        else
-            var_dump($model->errors);
-        die();
-
-    }
-
-    public function actionDel($disciplines_id, $class_type_id){
-
-        $model = DisciplinesClassroom::find()->where([
-                'disciplines_id' => $disciplines_id,
-                'class_type_id' => $class_type_id
-            ])->one();
-
-        if ($model->delete())
-            return $this->redirect(Yii::$app->request->referrer);
-        else
-            var_dump($model->errors);
-        die();
-    }
-
     /**
-     * Creates a new ClassType model.
+     * Creates a new DisciplinesClassSchedule model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
     public function actionCreate()
     {
-        $model = new ClassType();
+        $model = new DisciplinesClassSchedule();
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
@@ -133,7 +83,7 @@ class ClassTypeController extends Controller
     }
 
     /**
-     * Updates an existing ClassType model.
+     * Updates an existing DisciplinesClassSchedule model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param int $id ID
      * @return string|\yii\web\Response
@@ -153,7 +103,7 @@ class ClassTypeController extends Controller
     }
 
     /**
-     * Deletes an existing ClassType model.
+     * Deletes an existing DisciplinesClassSchedule model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param int $id ID
      * @return \yii\web\Response
@@ -167,15 +117,15 @@ class ClassTypeController extends Controller
     }
 
     /**
-     * Finds the ClassType model based on its primary key value.
+     * Finds the DisciplinesClassSchedule model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param int $id ID
-     * @return ClassType the loaded model
+     * @return DisciplinesClassSchedule the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = ClassType::findOne(['id' => $id])) !== null) {
+        if (($model = DisciplinesClassSchedule::findOne(['id' => $id])) !== null) {
             return $model;
         }
 

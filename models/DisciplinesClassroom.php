@@ -19,7 +19,7 @@ class DisciplinesClassroom extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'disciplines_classroom';
+        return 'disciplines_class_type';
     }
 
     /**

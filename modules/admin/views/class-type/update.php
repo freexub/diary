@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /** @var yii\web\View $this */
 /** @var app\models\ClassType $model */
 
-$this->title = 'Update Class Type: ' . $model->name;
+$this->title = 'Редктирование типа класса: ' . $model->name;
 $this->params['breadcrumbs'][] = ['label' => 'Class Types', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
